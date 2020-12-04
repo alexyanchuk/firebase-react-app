@@ -47,12 +47,12 @@ const App = () => {
                   <Route exact path="/" component={Main} />
                   <Route
                       exact
-                      path={`${ROUTES.signIn}/`}
+                      path={`${ROUTES.signIn}`}
                       component={SignIn}
                   />
                   <Route
                       exact
-                      path={`${ROUTES.signUp}/`}
+                      path={`${ROUTES.signUp}`}
                       component={SignUp}
                   />
                 </Switch>

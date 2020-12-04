@@ -1,37 +1,104 @@
-import React from "react";
-import Paper from "@material-ui/core/Paper";
+import React, { useRef } from "react";
+import Paper from "../../components/Paper";
 import { useForm } from "react-hook-form";
-import { Button, Typography } from "@material-ui/core";
+import TextField from '@material-ui/core/TextField';
+import { Button, Container, Typography } from "@material-ui/core";
+import firebase from "../../services/firebase";
+import { Link } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
 import classes from "./SignUp.module.scss";
 
 export default function SignUp() {
-    const { register, handleSubmit, watch, errors } = useForm();
-    const onSubmit = data => console.log(data);
+    const ref = useRef({});
+    const { current } = ref;
+    const { register, handleSubmit, watch, errors, formState: { isValid }} = useForm();
+    console.log(errors)
 
-    console.log(watch("example")); // watch input value by passing the name of it
+    const handleOnSubmit = async event => {
+        event?.preventDefault();
+        console.log({ ...current.value })
+        if (isValid) {
+            const db = firebase.database();
+            console.log(db)
+            const usersRef = db.ref("users")
+            usersRef.push({
+                firstName: current?.firstName?.value,
+                lastName: current?.lastName?.value,
+                email: current?.email?.value,
+                password: current?.password?.value,
+            })
+            console.log({ usersRef });
+        }
+
+    };
+
+    console.info(watch("email")); // watch input value by passing the name of it
 
     return (
-        <div className={classes.root}>
-            <Paper variant="outlined" className={classes.paper} >
+        <Container className={classes.root}>
+            <Paper>
                 <Typography variant="h6">
                     Register
                 </Typography>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <input name="firstName" ref={register({ required: true })} placeholder="First Name" />
-                    {errors.firstName && <span>This field is required</span>}
+                <form onSubmit={event => handleOnSubmit(event)} ref={ref}>
+                    <TextField
+                        name="firstName"
+                        type={"text"}
+                        ref={register({ required: true })}
+                        placeholder="First Name"
+                        error={errors?.firstName}
+                        helperText={errors?.firstName && "This field is required"}
+                        inputProps={{
+                            'aria-label': 'firstName',
+                            "name":"firstName"
+                        }}
+                    />
 
-                    <input name="lastName" ref={register({ required: true })} placeholder="Last Name" />
-                    {errors.lastName && <span>This field is required</span>}
+                    <TextField
+                        name="lastName"
+                        type={"text"}
+                        ref={register({ required: true })}
+                        placeholder="Last Name"
+                        error={errors?.lastName}
+                        helperText={errors?.lastName && "This field is required"}
+                        inputProps={{
+                            'aria-label': 'lastName',
+                            "name":"lastName"
+                        }}
+                    />
 
-                    <input name="email" ref={register({ required: true })} placeholder="Email" />
-                    {errors.email && <span>This field is required</span>}
+                    <TextField
+                        name="email"
+                        type={"email"}
+                        ref={register({ required: true })}
+                        placeholder="Email"
+                        error={errors?.email}
+                        helperText={errors?.email && "This field is required"}
+                        inputProps={{
+                            'aria-label': 'email',
+                            "name":"email"
+                        }}
+                    />
 
-                    <input name="password" ref={register({ required: true })} placeholder="Password" />
-                    {errors.password && <span>This field is required</span>}
+                    <TextField
+                        name="password"
+                        type={"password"}
+                        ref={register({ required: true })}
+                        placeholder="Password"
+                        error={errors?.password}
+                        helperText={errors?.password && "This field is required"}
+                        inputProps={{
+                            'aria-label': 'password',
+                            "name":"password"
+                        }}
+                    />
 
                     <Button type="submit" className={classes.submit} >Submit</Button>
                 </form>
+                <Typography variant="body1">
+                    Already registered? <Link to={ROUTES.signIn}>Log in</Link>
+                </Typography>
             </Paper>
-        </div>
+        </Container>
     );
 }

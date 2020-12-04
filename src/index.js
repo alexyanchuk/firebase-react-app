@@ -4,12 +4,12 @@ import App from "./App";
 import { Provider } from "react-redux";
 import reportWebVitals from './reportWebVitals';
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./store/reducers/users"
+import usersReducer from "./store/reducers/users"
 import "./index.scss";
 
 const store = configureStore({
     reducer: {
-        userReducer,
+        usersReducer,
     },
 });
 
